@@ -1,0 +1,26 @@
+{
+  "name": "qr-util",
+  "version": "0.1.0",
+  "description": "Vector based QR Code api for node & browsers",
+  "author": "Matt Scullino <contact@sculli.net>",
+  "contributors": [
+    "Ryan Day <soldair@gmail.com>",
+    "Vincenzo Greco <greco.vincenzo@gmail.com>",
+    "Linus Unnebäck <linus@folkdatorn.se>"
+  ],
+  "keywords": [
+    "qr",
+    "code",
+    "canvas",
+    "qrcode"
+  ],
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.2",
+  "dependencies": {
+    "typescript": "^6.0.2"
+  }
+}
