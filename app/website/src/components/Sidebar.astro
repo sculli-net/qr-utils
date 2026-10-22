@@ -8,21 +8,93 @@ const tabs = [
 const current = Astro.url.pathname.replace(/\/$/, '') || '/';
 ---
 
+<style>
+	
+nav[data-sidebar-component="nav-wrapper"]:hover li[data-sidebar-component="nav-item"] a[aria-current='page'] {
+
+	/* border: 1px solid blue; */
+	background-color: color-mix(in oklab, var(--color-neutral-900) 80%, transparent);
+}
+
+nav[data-sidebar-component="nav-wrapper"] li[data-sidebar-component="nav-item"]:not(:has([aria-current='page'])):hover {
+
+	background-color: color-mix(in oklab, var(--color-neutral-900) 10%, transparent);
+}
+
+nav[data-sidebar-component="nav-wrapper"] ul {
+	position: relative;
+}
+
+nav[data-sidebar-component="nav-wrapper"]:not(:has(a:hover, a:focus-visible))
+  a[aria-current="page"],
+nav[data-sidebar-component="nav-wrapper"] a:is(:hover, :focus-visible) {
+  anchor-name: --target;
+}
+
+li[data-sidebar-component="nav-item"] {
+	position: relative;
+	z-index: 1;
+	border-radius: var(--radius-md);
+}
+
+li[] {
+	background-color: color-mix(in oklab, var(--color-neutral-900) 80%, transparent);
+}
+
+.highlight {
+  position: absolute;
+  position-anchor: --target;
+
+  left: anchor(left);
+  top: anchor(top);
+  width: anchor-size(width);
+  height: anchor-size(height);
+
+  /* background: #e5e5e5; */
+  background: color-mix(in oklab, var(--color-neutral-900) 10%, transparent);
+  border-radius: var(--radius-md);
+  pointer-events: none;
+
+  transition:
+    left 250ms ease,
+    top 250ms ease,
+    width 250ms ease,
+    height 250ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .highlight {
+    transition: none;
+  }
+}
+
+</style>
+
 <aside class="border-b border-neutral-200 bg-neutral-50 p-4 md:w-56 md:shrink-0 md:border-r md:border-b-0">
 	<a href="/" class="mb-4 block px-3 text-lg font-semibold">qr-util</a>
-	<nav>
+	<nav data-sidebar-component="nav-wrapper">
 		<ul class="flex gap-1 md:flex-col">
 			{tabs.map(({ label, href }) => (
-				<li>
+				<li data-sidebar-component="nav-item">
 					<a
 						href={href}
 						aria-current={current === href ? 'page' : undefined}
-						class="block rounded-md px-3 py-2 text-sm text-neutral-600 hover:bg-neutral-200 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white"
+						data-astro-prefetch="load"
+						class="block rounded-md px-3 py-2 text-sm text-neutral-600 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white"
 					>
 						{label}
 					</a>
 				</li>
 			))}
+			<span class="highlight" aria-hidden="true"></span>
 		</ul>
 	</nav>
 </aside>
+
+<script>
+	
+	const navWrapper = document.querySelector('[data-sidebar-component="nav-wrapper"]');
+	const navItems = document.querySelectorAll('[data-sidebar-component="nav-item"]');
+	const items = navItems.forEach(console.log)
+
+</script>

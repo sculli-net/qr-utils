@@ -1,0 +1,24 @@
+---
+// Font: dos-rebel. Layered like the skills.sh banner — the full art (with ░ shading)
+// sits underneath in a muted colour and the solid █ blocks are drawn on top.
+const banner = `    ██████    ███████████              █████  █████ ███████████ █████ █████        █████████ 
+  ███░░░░███ ░░███░░░░░███            ░░███  ░░███ ░█░░░███░░░█░░███ ░░███        ███░░░░░███
+ ███    ░░███ ░███    ░███             ░███   ░███ ░   ░███  ░  ░███  ░███       ░███    ░░░ 
+░███     ░███ ░██████████   ██████████ ░███   ░███     ░███     ░███  ░███       ░░█████████ 
+░███   ██░███ ░███░░░░░███ ░░░░░░░░░░  ░███   ░███     ░███     ░███  ░███        ░░░░░░░░███
+░░███ ░░████  ░███    ░███             ░███   ░███     ░███     ░███  ░███      █ ███    ░███
+ ░░░██████░██ █████   █████            ░░████████      █████    █████ ███████████░░█████████ 
+   ░░░░░░ ░░ ░░░░░   ░░░░░              ░░░░░░░░      ░░░░░    ░░░░░ ░░░░░░░░░░░  ░░░░░░░░░  
+                                                                                             `;
+
+const solid = banner.replaceAll('░', ' ');
+
+// Fira Mono glyphs are 0.6em wide, less 0.0667em tracking = 0.533em per column.
+// 93 columns × 0.533em = 49.6em, so 2cqi per 1em fills ~99% of the container width.
+---
+
+<div class="@container relative max-w-full overflow-hidden" role="img" aria-label="QR-UTILS">
+	<pre aria-hidden="true" class="invisible text-[length:clamp(4px,2cqi,15px)] tracking-[-0.0667em] leading-[125%] select-none whitespace-pre font-[family-name:'Fira_Mono',monospace]">{banner}</pre>
+	<pre aria-hidden="true" class="absolute top-0 left-0 text-neutral-400 text-[length:clamp(4px,2cqi,15px)] tracking-[-0.0667em] leading-[125%] select-none whitespace-pre font-[family-name:'Fira_Mono',monospace]">{banner}</pre>
+	<pre aria-hidden="true" class="absolute top-0 left-0 text-neutral-900 text-[length:clamp(4px,2cqi,15px)] tracking-[-0.0667em] leading-[125%] select-none whitespace-pre font-[family-name:'Fira_Mono',monospace]">{solid}</pre>
+</div>

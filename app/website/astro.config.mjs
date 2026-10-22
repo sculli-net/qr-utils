@@ -11,6 +11,7 @@ const resolveLib = (path) => fileURLToPath(new URL(`../../lib/${path}`, import.m
 // https://astro.build/config
 export default defineConfig({
     site: `https://qr-utils.sculli.dev`,
+    prefetch: true,
     integrations: [react(), mdx(), sitemap()],
     adapter: vercel(),
     vite: {
