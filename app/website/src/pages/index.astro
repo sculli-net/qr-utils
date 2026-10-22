@@ -1,14 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Banner from '../components/Banner.astro';
-import CodeBlock from '../components/CodeBlock.astro'
+import InstallCommand from '../components/InstallCommand.astro';
 ---
 
 <Layout title="Home">
-	<div class="mb-8">
-		<Banner />
+	{/* The banner tops out at 93 columns × 0.533em × 15px ≈ 46.5rem; the install sits on its centre line */}
+	<div class="mb-16 max-w-[46.5rem]">
+		<div class="mb-10">
+			<Banner />
+		</div>
+		<InstallCommand />
 	</div>
 	<h1 class="mb-4 text-3xl font-bold">Home</h1>
 	<p class="text-neutral-600">Placeholder: an overview of the @qr-util packages will go here.</p>
-	<CodeBlock />
 </Layout>

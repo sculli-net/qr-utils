@@ -1,0 +1,489 @@
+---
+import Clipboard from '../assets/icons/clipboard.svg';
+
+const PACKAGE_NAME = `qr-utils`;
+
+const managers = [
+	{ id: `npm`, run: `npm install` },
+	{ id: `pnpm`, run: `pnpm add` },
+	{ id: `yarn`, run: `yarn add` },
+	{ id: `bun`, run: `bun add` },
+];
+
+const [defaultManager] = managers;
+---
+
+<div class="install" data-install data-package={PACKAGE_NAME}>
+	<div class="install-managers" role="group" aria-label="Package manager">
+		{
+			managers.map(({ id, run }) => (
+				<button type="button" class="install-manager" data-manager={id} data-run={run} aria-pressed={String(id === defaultManager.id)}>
+					{id}
+				</button>
+			))
+		}
+		<span class="install-indicator" aria-hidden="true"></span>
+	</div>
+
+	<div class="install-slab">
+		{/* One line of real text with real spaces, so it reads (and selects) on the mono grid */}
+		<code class="install-command"><span class="install-prompt" aria-hidden="true">$ </span><span class="install-run" data-install-run>{defaultManager.run}</span> <span class="install-package" data-install-package>{PACKAGE_NAME}</span></code>
+		<button type="button" class="install-copy" data-install-copy aria-label="Copy install command" title="Copy install command">
+			<Clipboard class="install-icon install-icon-copy" aria-hidden="true" />
+			<svg class="install-icon install-icon-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+				<path d="M20 6 9 17l-5-5"></path>
+			</svg>
+			<span class="install-copy-hint" data-install-hint aria-hidden="true">Ctrl C</span>
+		</button>
+	</div>
+
+	<a href="/playground" class="install-next">
+		Try it in the playground
+		<svg class="install-next-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+			<path d="M5 12h14"></path>
+			<path d="m12 5 7 7-7 7"></path>
+		</svg>
+	</a>
+
+	<p class="sr-only" aria-live="polite" data-install-status></p>
+</div>
+
+{/* Applies the remembered package manager before first paint, so a returning visitor's command never jumps */}
+<script is:inline data-astro-rerun>
+	(() => {
+		const root = document.currentScript?.previousElementSibling;
+		let stored = null;
+		try {
+			stored = localStorage.getItem('qr-util:package-manager');
+		} catch {}
+		const button = stored && root?.querySelector(`[data-manager="${stored}"]`);
+		const run = root?.querySelector('[data-install-run]');
+		if (!button || !run) return;
+		root.querySelectorAll('[data-manager]').forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+		run.textContent = button.dataset.run;
+	})();
+</script>
+
+<script>
+	const STORAGE_KEY = 'qr-util:package-manager';
+
+	function store(manager: string) {
+		try {
+			localStorage.setItem(STORAGE_KEY, manager);
+		} catch {
+			// Storage can be unavailable (private mode); the choice just isn't remembered
+		}
+	}
+
+	const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	/** Characters that flash amber and settle, staggered left to right from `offset`. */
+	function flashing(text: string, offset = 0): HTMLSpanElement[] {
+		return [...text].map((char, index) => {
+			const span = document.createElement('span');
+			span.className = 'install-char';
+			span.style.setProperty('--i', String(offset + index));
+			span.textContent = char;
+			return span;
+		});
+	}
+
+	/** Re-sets the run text, flashing only the characters that differ from the old text. */
+	function setRun(target: HTMLElement, next: string, animate: boolean) {
+		const previous = target.textContent ?? '';
+		if (previous === next) return;
+		if (!animate || reducedMotion()) {
+			target.textContent = next;
+			return;
+		}
+		let start = 0;
+		while (start < previous.length && start < next.length && previous[start] === next[start]) start++;
+		let end = 0;
+		while (end < previous.length - start && end < next.length - start && previous[previous.length - 1 - end] === next[next.length - 1 - end]) end++;
+		target.replaceChildren(next.slice(0, start), ...flashing(next.slice(start, next.length - end)), next.slice(next.length - end));
+	}
+
+	/** Copying flashes the whole command once, the same wave a change makes. */
+	function flashCommand(root: HTMLElement) {
+		if (reducedMotion()) return;
+		const run = root.querySelector<HTMLElement>('[data-install-run]');
+		const pkg = root.querySelector<HTMLElement>('[data-install-package]');
+		if (!run || !pkg) return;
+		const runText = run.textContent ?? '';
+		run.replaceChildren(...flashing(runText));
+		pkg.replaceChildren(...flashing(pkg.textContent ?? '', runText.length + 1));
+	}
+
+	function select(root: HTMLElement, manager: string, animate: boolean) {
+		const button = root.querySelector<HTMLButtonElement>(`[data-manager="${manager}"]`);
+		const run = root.querySelector<HTMLElement>('[data-install-run]');
+		if (!button || !run) return;
+		root.querySelectorAll<HTMLButtonElement>('[data-manager]').forEach((other) => other.setAttribute('aria-pressed', String(other === button)));
+		setRun(run, button.dataset.run ?? '', animate);
+	}
+
+	function commandText(root: HTMLElement): string {
+		const run = root.querySelector<HTMLButtonElement>('[aria-pressed="true"]')?.dataset.run ?? '';
+		return `${run} ${root.dataset.package}`;
+	}
+
+	// Restart a CSS animation that is driven by a class
+	function replay(element: HTMLElement, className: string) {
+		element.classList.remove(className);
+		void element.offsetWidth;
+		element.classList.add(className);
+	}
+
+	const copyTimers = new WeakMap<HTMLElement, number>();
+
+	/** Shows a copy result on the copy cell for a moment, then returns it to rest. */
+	function showResult(root: HTMLElement, state: 'is-copied' | 'is-copy-failed', message: string, title: string) {
+		const status = root.querySelector<HTMLElement>('[data-install-status]');
+		const button = root.querySelector<HTMLButtonElement>('[data-install-copy]');
+		if (status) status.textContent = message;
+		if (button) button.title = title;
+		root.classList.remove('is-copied', 'is-copy-failed');
+		replay(root, state);
+		window.clearTimeout(copyTimers.get(root));
+		copyTimers.set(
+			root,
+			window.setTimeout(
+				() => {
+					root.classList.remove(state);
+					if (status) status.textContent = '';
+					if (button) button.title = 'Copy install command';
+				},
+				state === 'is-copied' ? 1600 : 4000,
+			),
+		);
+	}
+
+	/** Selects the command text (without the prompt) so the visitor can copy it by hand. */
+	function selectCommand(root: HTMLElement) {
+		const run = root.querySelector('[data-install-run]');
+		const pkg = root.querySelector('[data-install-package]');
+		const selection = window.getSelection();
+		if (!run || !pkg || !selection) return;
+		const range = document.createRange();
+		range.setStartBefore(run);
+		range.setEndAfter(pkg);
+		selection.removeAllRanges();
+		selection.addRange(range);
+	}
+
+	async function copy(root: HTMLElement) {
+		const text = commandText(root);
+		try {
+			await navigator.clipboard.writeText(text);
+		} catch {
+			const hint = root.querySelector<HTMLElement>('[data-install-hint]');
+			if (hint) hint.textContent = /Mac|iPhone|iPad/.test(navigator.userAgent) ? '⌘C' : 'Ctrl C';
+			selectCommand(root);
+			showResult(root, 'is-copy-failed', `Couldn't copy automatically. The command is selected: press Ctrl+C or ⌘C.`, `Couldn't copy: the command is selected, press Ctrl+C or ⌘C`);
+			return;
+		}
+		flashCommand(root);
+		showResult(root, 'is-copied', `Copied: ${text}`, 'Copied');
+	}
+
+	// The indicator only glides once the visitor reaches for the row; on load it simply sits in place
+	const wake = (event: Event) => {
+		if (event.target instanceof Element) event.target.closest('[data-install]')?.classList.add('is-live');
+	};
+	document.addEventListener('pointerover', wake);
+	document.addEventListener('focusin', wake);
+
+	document.addEventListener('click', (event) => {
+		if (!(event.target instanceof Element)) return;
+		const root = event.target.closest<HTMLElement>('[data-install]');
+		if (!root) return;
+
+		const manager = event.target.closest<HTMLButtonElement>('[data-manager]');
+		if (manager?.dataset.manager) {
+			select(root, manager.dataset.manager, true);
+			store(manager.dataset.manager);
+			return;
+		}
+		if (event.target.closest('[data-install-copy]')) void copy(root);
+	});
+</script>
+
+<style is:global>
+	.install {
+		display: flex;
+		flex-direction: column;
+		align-items: stretch;
+		gap: 0.75rem;
+		width: 100%;
+		max-width: 36rem;
+		margin-inline: auto;
+	}
+
+	/* Package managers: mono labels with one ink underline that glides between them */
+	.install-managers {
+		position: relative;
+		display: flex;
+		gap: 0.25rem;
+		padding-inline: 0.5rem;
+	}
+
+	.install-manager {
+		padding: 0.375rem 0.625rem 0.5rem;
+		border-radius: var(--radius-sm);
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		line-height: 1.25rem;
+		color: var(--color-neutral-500);
+		transition: color 150ms ease-out;
+		cursor: pointer;
+	}
+
+	.install-manager:hover,
+	.install-manager[aria-pressed='true'] {
+		color: var(--color-neutral-900);
+	}
+
+	.install-manager:focus-visible {
+		outline: 2px solid var(--color-neutral-900);
+		outline-offset: 2px;
+	}
+
+	.install-managers:not(:has(.install-manager:hover, .install-manager:focus-visible)) .install-manager[aria-pressed='true'],
+	.install-manager:is(:hover, :focus-visible) {
+		anchor-name: --install-manager;
+	}
+
+	.install-indicator {
+		display: none;
+	}
+
+	@supports (anchor-name: --a) {
+		.install-indicator {
+			display: block;
+			position: absolute;
+			position-anchor: --install-manager;
+			left: calc(anchor(left) + 0.625rem);
+			width: calc(anchor-size(width) - 1.25rem);
+			top: calc(anchor(bottom) - 0.25rem);
+			height: 2px;
+			background: var(--color-neutral-900);
+			pointer-events: none;
+		}
+
+		.is-live .install-indicator {
+			transition:
+				left 250ms cubic-bezier(0.16, 1, 0.3, 1),
+				width 250ms cubic-bezier(0.16, 1, 0.3, 1);
+		}
+	}
+
+	/* Without anchor positioning the pressed label carries its own underline */
+	@supports not (anchor-name: --a) {
+		.install-manager[aria-pressed='true'] {
+			text-decoration: underline 2px;
+			text-underline-offset: 0.4em;
+		}
+	}
+
+	/* The slab: the site's ink fill, one command, a copy cell behind a hairline */
+	.install-slab {
+		display: flex;
+		align-items: stretch;
+		min-height: 4rem;
+		border-radius: var(--radius-md);
+		background: var(--color-neutral-900);
+		color: white;
+		overflow: hidden;
+	}
+
+	.install-command {
+		align-self: center;
+		flex: 1;
+		min-width: 0;
+		padding-inline: 1.125rem;
+		font-family: var(--font-mono);
+		font-size: 1rem;
+		line-height: 1.5rem;
+		white-space: pre;
+		overflow-x: auto;
+		scrollbar-width: none;
+	}
+
+	@media (min-width: 40rem) {
+		.install-command {
+			padding-inline: 1.5rem;
+			font-size: 1.375rem;
+			line-height: 2rem;
+		}
+
+		.install-slab {
+			min-height: 4.5rem;
+		}
+
+		/* Label text starts level with the `$` (0.875rem + the label's 0.625rem = the command's 1.5rem) */
+		.install-managers {
+			padding-inline: 0.875rem;
+		}
+
+		.install-copy {
+			width: 4.5rem;
+		}
+	}
+
+	.install-command::selection,
+	.install-command ::selection {
+		background: var(--color-amber-200);
+		color: var(--color-neutral-900);
+	}
+
+	.install-prompt {
+		color: var(--color-neutral-500);
+		user-select: none;
+	}
+
+	.install-run {
+		color: var(--color-neutral-300);
+	}
+
+	.install-package {
+		color: white;
+	}
+
+	/* Only the characters that differ from the previous manager flash, left to right */
+	.install-char {
+		display: inline-block;
+		white-space: pre;
+		animation: install-char 760ms ease-out backwards;
+		animation-delay: calc(var(--i) * 18ms);
+	}
+
+	/* Lands quickly in full amber, holds, then settles to the command's own colour (like the playground trace) */
+	@keyframes install-char {
+		0% {
+			color: var(--color-amber-400);
+			filter: blur(2px);
+			transform: translateY(0.18em);
+		}
+		30% {
+			color: var(--color-amber-400);
+			filter: none;
+			transform: none;
+		}
+	}
+
+	.install-copy {
+		display: grid;
+		place-items: center;
+		flex: none;
+		width: 4rem;
+		border-left: 1px solid color-mix(in oklab, white 12%, transparent);
+		color: var(--color-neutral-400);
+		cursor: pointer;
+		transition:
+			color 150ms ease-out,
+			background-color 150ms ease-out;
+	}
+
+	.install-copy:hover {
+		color: white;
+		background: color-mix(in oklab, white 8%, transparent);
+	}
+
+	.install-copy:active {
+		background: color-mix(in oklab, white 14%, transparent);
+	}
+
+	.install-copy:focus-visible {
+		outline: 2px solid white;
+		outline-offset: -6px;
+		border-radius: var(--radius-md);
+	}
+
+	.install-icon {
+		grid-area: 1 / 1;
+		width: 1.125rem;
+		height: 1.125rem;
+		transition:
+			opacity 150ms ease-out,
+			transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+	}
+
+	.install-icon-check {
+		opacity: 0;
+		transform: scale(0.6);
+		color: var(--color-amber-400);
+	}
+
+	.is-copied .install-icon-copy {
+		opacity: 0;
+		transform: scale(0.6);
+	}
+
+	.is-copied .install-icon-check {
+		opacity: 1;
+		transform: none;
+	}
+
+	/* A failed copy stays neutral: the command is left selected and the cell names the shortcut to copy it by hand */
+	.install-copy-hint {
+		grid-area: 1 / 1;
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		line-height: 1.25rem;
+		color: var(--color-neutral-300);
+		white-space: nowrap;
+		opacity: 0;
+		transition: opacity 150ms ease-out;
+	}
+
+	.is-copy-failed .install-icon-copy {
+		opacity: 0;
+		transform: scale(0.6);
+	}
+
+	.is-copy-failed .install-copy-hint {
+		opacity: 1;
+	}
+
+	.install-next {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.375rem;
+		align-self: center;
+		margin-top: 0.25rem;
+		font-size: 0.875rem;
+		color: var(--color-neutral-600);
+		text-decoration: underline;
+		text-decoration-color: var(--color-neutral-300);
+		text-underline-offset: 0.3em;
+		transition:
+			color 150ms ease-out,
+			text-decoration-color 150ms ease-out;
+	}
+
+	.install-next-icon {
+		width: 0.875rem;
+		height: 0.875rem;
+	}
+
+	.install-next:hover {
+		color: var(--color-neutral-900);
+		text-decoration-color: currentColor;
+	}
+
+	.install-next:focus-visible {
+		outline: 2px solid var(--color-neutral-900);
+		outline-offset: 3px;
+		border-radius: var(--radius-sm);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.install-indicator,
+		.install-icon {
+			transition: none;
+		}
+		.install-char {
+			animation: none;
+		}
+	}
+</style>

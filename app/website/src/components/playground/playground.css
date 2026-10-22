@@ -1,0 +1,86 @@
+/* Corner ticks framing the stage. They darken while the input has focus. */
+.qr-tick {
+	position: absolute;
+	width: 0.875rem;
+	height: 0.875rem;
+	border-color: var(--color-neutral-300);
+	transition: border-color 200ms cubic-bezier(0.16, 1, 0.3, 1);
+	pointer-events: none;
+	z-index: 1;
+}
+
+.group\/playground:has(textarea:focus) .qr-tick {
+	border-color: var(--color-neutral-900);
+}
+
+.group\/playground:has(textarea[aria-invalid='true']) .qr-tick {
+	border-color: var(--color-red-600);
+}
+
+[data-state='error'] .qr-stage {
+	opacity: 0.25;
+	transition: opacity 200ms ease-out;
+}
+
+/* A new symbol size redraws the whole code, so it settles in rather than tracing. */
+.qr-stage {
+	animation: qr-settle 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes qr-settle {
+	from {
+		opacity: 0.35;
+		filter: blur(2px);
+	}
+}
+
+/* Modules that flipped on the latest edit flash amber, then fade to their real colour:
+   filled where a module turned dark, outlined where it turned light. */
+.qr-trace {
+	animation: qr-trace 900ms ease-out forwards;
+}
+
+.qr-trace-on {
+	fill: var(--color-amber-400);
+}
+
+.qr-trace-off {
+	fill: none;
+	stroke: var(--color-amber-600);
+}
+
+/* Hold the flash long enough to read, then let it settle into the real modules */
+@keyframes qr-trace {
+	0% {
+		opacity: 1;
+	}
+	35% {
+		opacity: 0.85;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+/* A readout value that just changed starts amber, like the trace */
+.qr-value {
+	animation: qr-value 900ms ease-out;
+}
+
+@keyframes qr-value {
+	from {
+		/* amber-700 keeps the small readout text above 4.5:1 while it flashes */
+		color: var(--color-amber-700, oklch(55.5% 0.163 48.998));
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.qr-value,
+	.qr-stage,
+	.qr-trace {
+		animation: none;
+	}
+	.qr-trace {
+		display: none;
+	}
+}
