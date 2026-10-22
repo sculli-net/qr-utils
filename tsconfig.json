@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "types": ["node"],
+    "rootDir": ".",
+    "paths": {
+      "@qr-util/core": ["./lib/core/src/index.ts"],
+      "@qr-util/core/*": ["./lib/core/src/*"],
+      "@qr-util/render": ["./lib/render/src/index.ts"]
+    }
+  },
+  "include": ["lib/*/src/**/*.ts", "lib/*/test/**/*.ts", "vitest.config.ts"]
+}

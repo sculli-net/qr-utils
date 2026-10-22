@@ -1,11 +1,12 @@
 .DS_STORE
 
 # dependencies
-/node_modules
+node_modules
 /ref
 
 # production
 /build
+dist
 
 # debug
 npm-debug.log*
@@ -21,3 +22,6 @@ yarn-error.log*
 *.tsbuildinfo
 
 #references
+# astro / vercel
+.astro
+.vercel

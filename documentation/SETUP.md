@@ -69,7 +69,7 @@ const qrRenderer = new RenderQR(myQrCode)
 const qrCodeImage = qrRenderer.toPNG()
 ```
 
-We should also take renderer attributes
+We should also take optional renderer attributes
 
 | Attribute | Purpose | Default (?) |
 | -- | -- | -- |
@@ -78,6 +78,7 @@ We should also take renderer attributes
 | quietZone | space between the qr dots and edge (padding is added on top) - optionally can be disabled | true |
 | backgroundColor | CSS compatible color value that decides the background color. Can be null for no background | white |
 | color | CSS compatible color value that decides the dot / foreground color | black |
+| excavate | takes either 'true'/'false' or a number from 0-100 and removes non-critical blocks in the center that can be removed to accomodate an logo. The number is a percentage allowing us to control size. 100 means all possible blocks are removed, while 0 is none | none / false |
 | shape | Object which handles the shape / shapes & rendering of the qr code dots or overall shape (explained below) | none - just plain squares |
 | modules | allows specific styling of individual modules (explained below) | none - the function patterns are just rendered as part of the primary output |
 

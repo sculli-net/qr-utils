@@ -1,0 +1,28 @@
+---
+const tabs = [
+	{ label: 'Home', href: '/' },
+	{ label: 'Docs', href: '/docs' },
+	{ label: 'Playground', href: '/playground' },
+];
+
+const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<aside class="border-b border-neutral-200 bg-neutral-50 p-4 md:w-56 md:shrink-0 md:border-r md:border-b-0">
+	<a href="/" class="mb-4 block px-3 text-lg font-semibold">qr-util</a>
+	<nav>
+		<ul class="flex gap-1 md:flex-col">
+			{tabs.map(({ label, href }) => (
+				<li>
+					<a
+						href={href}
+						aria-current={current === href ? 'page' : undefined}
+						class="block rounded-md px-3 py-2 text-sm text-neutral-600 hover:bg-neutral-200 aria-[current=page]:bg-neutral-900 aria-[current=page]:text-white"
+					>
+						{label}
+					</a>
+				</li>
+			))}
+		</ul>
+	</nav>
+</aside>

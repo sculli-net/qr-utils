@@ -1,0 +1,53 @@
+{
+  "name": "@qr-util/core",
+  "version": "0.1.0",
+  "description": "Headless QR Code generator: QR Model 1 & 2, Micro QR and rMQR with full control over version, ECC, masks, segments, ECI, FNC1 and structured append",
+  "author": "Matt Scullino <contact@sculli.net>",
+  "contributors": [
+    "Ryan Day <soldair@gmail.com>",
+    "Vincenzo Greco <greco.vincenzo@gmail.com>",
+    "Linus Unnebäck <linus@folkdatorn.se>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "qr",
+    "qrcode",
+    "qr-code",
+    "micro-qr",
+    "rmqr",
+    "barcode",
+    "2d-barcode",
+    "matrix"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./sjis": {
+      "types": "./dist/sjis.d.ts",
+      "default": "./dist/sjis.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "src",
+    "!src/**/*.test.ts",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "prepublishOnly": "pnpm run build"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
