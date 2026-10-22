@@ -70,7 +70,7 @@ li[] {
 
 </style>
 
-<aside class="border-b border-neutral-200 bg-neutral-50 p-4 md:w-56 md:shrink-0 md:border-r md:border-b-0">
+<aside transition:persist class="border-b border-neutral-200 bg-neutral-50 p-4 md:w-56 md:shrink-0 md:border-r md:border-b-0">
 	<a href="/" class="mb-4 block px-3 text-lg font-semibold">qr-util</a>
 	<nav data-sidebar-component="nav-wrapper">
 		<ul class="flex gap-1 md:flex-col">
@@ -94,7 +94,48 @@ li[] {
 <script>
 	
 	const navWrapper = document.querySelector('[data-sidebar-component="nav-wrapper"]');
-	const navItems = document.querySelectorAll('[data-sidebar-component="nav-item"]');
-	const items = navItems.forEach(console.log)
+	const navItems = document.querySelectorAll<HTMLElement>('[data-sidebar-component="nav-item"]');
+	const navLinks = Array.from(navItems).map(item=>item.querySelector<HTMLAnchorElement>('a')).filter(l=>l!==null);
+	// const items = navItems.forEach(console.log)
+
+	// window.addEventListener('popstate', (event)=> {
+	// 	console.log('History changed:', location.href, event.state);
+	// 	if (!(navWrapper instanceof Element)) return;
+	// 	navItems.forEach((link) => {
+	// 		link.setAttribute("aria-current", String(location.href.split('/')[0] === link.href));
+	// 	});
+	// });
+	document.addEventListener('astro:page-load', (event)=> {
+		if (!(navWrapper instanceof Element)) return;
+		navLinks.forEach((link) => {
+			const pathMatch = link.pathname.length <= 1 ? (location.pathname === link.pathname) : location.pathname.startsWith(link.pathname)
+			if (pathMatch) {
+				link.setAttribute("aria-current", 'page');
+			} else {
+				link.removeAttribute("aria-current");
+			}
+			// link.firstElementChild?.setAttribute("aria-current", location.pathname.split('/')[0] === link.href ? 'page' : '') // .href.split('/')[0] === link.href));
+		});
+	});
+
+	document.querySelectorAll<HTMLElement>("[data-code-tabs]").forEach((root) => {
+        root.addEventListener("click", (event) => {
+            if (!(event.target instanceof Element)) return;
+            const tab = event.target.closest<HTMLButtonElement>("[data-code-tab]");
+            if (!tab || !root.contains(tab)) return;
+
+            const selected = tab.dataset.codeTab;
+
+            root.querySelectorAll<HTMLButtonElement>("[data-code-tab]").forEach((button) => {
+                button.setAttribute("aria-pressed", String(button === tab));
+            });
+
+            root.querySelectorAll<HTMLElement>("[data-code-panel]").forEach((panel) => {
+                panel.hidden = panel.dataset.codePanel !== selected;
+            });
+        });
+    });
+
+
 
 </script>

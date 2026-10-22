@@ -1,0 +1,143 @@
+---
+import { codeToHtml } from "shiki/bundle/web";
+import Clipboard from "../assets/icons/clipboard.svg";
+
+const packageManager = {
+  npm: `install`,
+  pnpm: `add`,
+  yarn: `add`,
+  bun: `add`,
+};
+
+const PACKAGE_NAME = `qr-utils`;
+
+const scripts = await Promise.all(
+  Object.entries(packageManager).map(async ([k, v]) => ({
+    manager: k,
+    html: await codeToHtml(`${k} ${v} ${PACKAGE_NAME}`, {
+      lang: "zsh",
+      theme: "vitesse-dark",
+    }),
+  })),
+);
+
+const defaultTab = scripts[0];
+---
+
+<div class="" data-code-tabs>
+  <div class="">
+    <ul class="flex gap-1" role="group" aria-label="Package manager">
+      {
+        scripts.map((s, i) => (
+          <li>
+            <button
+              type="button"
+              data-code-tab={s.manager}
+              aria-pressed={i === 0}
+              class="px-2 py-1 rounded-sm bg-amber-100 aria-pressed:bg-amber-400"
+            >
+              {s.manager}
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+  <div class="relative rounded-sm overflow-hidden">
+    {
+      scripts.map((s, i) => (
+        <div
+          data-code-panel={s.manager}
+          hidden={i !== 0}
+          set:html={s.html}
+          class="[&_pre]:p-2"
+        />
+      ))
+    }
+    <div
+      class="absolute right-1 top-1 z-2 text-white rounded-sm bg-slate-700 hover:bg-slate-500"
+    >
+      <button class="p-2 [&_svg]:size-4">
+        <Clipboard />
+      </button>
+    </div>
+  </div>
+</div>
+<script>
+  // const tabs = document.querySelectorAll(`[data-codeblock-tab]`);
+  // const tablist = document.querySelector(`[data-codeblock-tablist]`)
+
+  // const codeBlocks = Array.from(document.querySelectorAll(`[data-codeblock-code]`)).map(e=>({ label: e.getAttribute(`data-codeblock-code`), element: e }))
+
+  // tabs.forEach(tab=>{
+  //     tab.addEventListener("click", (e)=> {
+  //         const packageManager = tab.getAttribute("data-codeblock-tab");
+  //         if (tablist && packageManager) {
+  //             codeBlocks.forEach(c=>c.element.setAttribute(`data-codeblock-code-isactive`, "false"))
+  //             codeBlocks.find(c=>c.label === packageManager)?.element.setAttribute(`data-codeblock-code-isactive`, "true")
+  //             tabs.forEach(t=>t.setAttribute(`data-codeblock-tab-isactive`, "false"))
+  //             tab.setAttribute(`data-codeblock-tab-isactive`, "true")
+  //             tablist.setAttribute(`data-codeblock-activetab`,packageManager)
+  //         }
+  //     })
+  // })
+
+//   const initializeCodeTabs = () => {
+//     document
+//       .querySelectorAll<HTMLElement>("[data-code-tabs]")
+//       .forEach((root) => {
+//         root.addEventListener("click", (event) => {
+//           if (!(event.target instanceof Element)) return;
+//           const tab =
+//             event.target.closest<HTMLButtonElement>("[data-code-tab]");
+//           if (!tab || !root.contains(tab)) return;
+
+//           const selected = tab.dataset.codeTab;
+
+//           root
+//             .querySelectorAll<HTMLButtonElement>("[data-code-tab]")
+//             .forEach((button) => {
+//               button.setAttribute("aria-pressed", String(button === tab));
+//             });
+
+//           root
+//             .querySelectorAll<HTMLElement>("[data-code-panel]")
+//             .forEach((panel) => {
+//               panel.hidden = panel.dataset.codePanel !== selected;
+//             });
+//         });
+//       });
+//   };
+//   document.addEventListener("astro:page-load", initializeCodeTabs);
+//   initializeCodeTabs();
+document.addEventListener("click", (event) => {
+    if (!(event.target instanceof Element)) return;
+
+    const tab = event.target.closest<HTMLButtonElement>(
+      "[data-code-tab]"
+    );
+
+    const root = tab?.closest<HTMLElement>(
+      "[data-code-tabs]"
+    );
+
+    if (!tab || !root) return;
+
+    const selected = tab.dataset.codeTab;
+
+    root.querySelectorAll<HTMLButtonElement>("[data-code-tab]")
+      .forEach((button) => {
+        button.setAttribute(
+          "aria-pressed",
+          String(button === tab)
+        );
+      });
+
+    root.querySelectorAll<HTMLElement>("[data-code-panel]")
+      .forEach((panel) => {
+        panel.hidden = panel.dataset.codePanel !== selected;
+      });
+  });
+</script>
+
+<style></style>
