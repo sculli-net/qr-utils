@@ -9,7 +9,7 @@
  * Changes to this file must stay backwards compatible (additive only) because both sides depend on it.
  */
 
-/** Function-pattern / region classification of a single module (mirrors `ModuleType` in `@qr-util/core`). */
+/** Function-pattern / region classification of a single module (mirrors `ModuleType` in `@sculli/qr-utils/core`). */
 export type StyleModuleType =
   | 'finder'
   | 'separator'
@@ -56,7 +56,7 @@ export interface StyleLandmark {
   readonly corner?: StyleCorner
 }
 
-/** Read-only view of a generated QR symbol (implemented by `QR` in `@qr-util/core`). */
+/** Read-only view of a generated QR symbol (implemented by `QR` in `@sculli/qr-utils/core`). */
 export interface StyleMatrix {
   /** Symbol width in modules (excluding quiet zone). */
   readonly width: number

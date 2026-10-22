@@ -1,23 +1,62 @@
 {
-  "name": "qr-util-workspace",
-  "private": true,
+  "name": "@sculli/qr-utils",
+  "version": "0.1.0",
   "type": "module",
-  "description": "Workspace for the @qr-util packages (core QR generation + rendering)",
+  "description": "QR code generation and SVG, PNG and HTML rendering for Node and browsers",
   "author": "Matt Scullino <contact@sculli.net>",
+  "repository": "https://github.com/sculli-net/qr-utils",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/src/index.d.ts",
+      "default": "./dist/core/src/index.js"
+    },
+    "./render": {
+      "types": "./dist/render/src/index.d.ts",
+      "default": "./dist/render/src/index.js"
+    },
+    "./core/sjis": {
+      "types": "./dist/core/src/sjis.d.ts",
+      "default": "./dist/core/src/sjis.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "lib/index.ts",
+    "lib/core/src",
+    "lib/render/src",
+    "lib/*/README.md",
+    "LICENCE"
+  ],
+  "keywords": ["qr", "qrcode", "qr-code", "micro-qr", "rmqr", "barcode", "svg", "png"],
   "packageManager": "pnpm@10.28.2",
   "engines": {
     "node": ">=20.19"
   },
   "scripts": {
-    "build": "pnpm --filter \"./lib/*\" run build",
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "pnpm run build",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "site:dev": "pnpm --filter @qr-util/website dev",
-    "site:build": "pnpm --filter @qr-util/website build",
-    "site:preview": "pnpm --filter @qr-util/website preview",
-    "site:check": "pnpm --filter @qr-util/website check"
+    "site:dev": "pnpm --filter @sculli/qr-utils-website dev",
+    "site:build": "pnpm --filter @sculli/qr-utils-website build",
+    "site:preview": "pnpm --filter @sculli/qr-utils-website preview",
+    "site:check": "pnpm --filter @sculli/qr-utils-website check"
+  },
+  "dependencies": {
+    "fflate": "^0.8.3"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

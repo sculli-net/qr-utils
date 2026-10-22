@@ -90,7 +90,7 @@ export interface CustomCharacterEncoding {
 
 /**
  * Converts a single character to its Shift JIS code (e.g. `'漢'` → `0x8ABF`), or `undefined` if it has none.
- * A complete implementation ships in `@qr-util/core/sjis`.
+ * A complete implementation ships in `@sculli/qr-utils/core/sjis`.
  */
 export type ToSJIS = (character: string) => number | undefined
 
@@ -206,13 +206,13 @@ export interface BaseOptions {
    * and the `'Shift_JIS'` byte encoding.
    *
    * @example
-   * import { toSJIS } from '@qr-util/core/sjis'
+   * import { toSJIS } from '@sculli/qr-utils/core/sjis'
    * new QR('漢字テスト', { toSJIS })
    */
   toSJIS?: ToSJIS
   /**
    * Quiet zone (blank margin) width in modules that should surround the symbol. Used by the matrix outputs
-   * when they include the quiet zone, and by `@qr-util/render`.
+   * when they include the quiet zone, and by `@sculli/qr-utils/render`.
    * The specification minimum is 4 for QR Model 1/2 and 2 for Micro QR and rMQR (the defaults).
    */
   quietZone?: number

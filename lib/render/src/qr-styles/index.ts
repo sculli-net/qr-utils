@@ -1,5 +1,5 @@
 /**
- * Style engine for `@qr-util/render`.
+ * Style engine for `@sculli/qr-utils/render`.
  *
  * It turns a QR module grid and the user's `color` / `shape` / `modules` props into a {@link RenderPlan}: layers of
  * rectangles and paths in output pixels that every backend (SVG, PNG, HTML) can draw.

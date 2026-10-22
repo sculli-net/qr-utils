@@ -1,6 +1,6 @@
 ---
-name: qr-util website
-description: Docs and live playground for the @qr-util QR code packages.
+name: "@sculli/qr-utils website"
+description: Docs and live playground for the @sculli/qr-utils package.
 colors:
   paper-white: "oklch(100% 0 0)"
   sidebar-wash: "oklch(98.5% 0 0)"
@@ -111,7 +111,7 @@ components:
     textColor: "{colors.ink}"
 ---
 
-# Design System: qr-util website
+# Design System: @sculli/qr-utils website
 
 ## Overview
 
@@ -168,7 +168,7 @@ A neutral greyscale with a single warm amber accent and a functional red for err
 ### Hierarchy
 - **Banner** (Fira Mono 400, clamp(4px, 2cqi, 15px), line-height 1.25, tracking -0.0667em): the layered dos-rebel "QR-UTILS" ASCII art. It sizes to its container so 93 columns always fill the width.
 - **Headline** (700, 1.875rem): one page title per page.
-- **Title** (600, 1.125rem): the "qr-util" wordmark at the top of the sidebar.
+- **Title** (600, 1.125rem): the "@sculli/qr-utils" wordmark at the top of the sidebar.
 - **Body** (400, 1rem, line-height 1.5): paragraphs and the data textarea.
 - **Label** (500 for field labels, 400 for nav links; 0.875rem): form labels and navigation.
 - **Command** (Fira Mono 400, 1.375rem, line-height 2rem; 1rem / 1.5rem under 40rem): the one-line install command on the ink slab.

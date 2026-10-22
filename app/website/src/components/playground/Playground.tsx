@@ -1,6 +1,6 @@
 import { useDeferredValue, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import { QR, QRError } from '@qr-util/core';
-import { RenderQR } from '@qr-util/render';
+import { QR, QRError } from '@sculli/qr-utils/core';
+import { RenderQR } from '@sculli/qr-utils/render';
 import './playground.css';
 
 /** Query parameter that holds the encoded data, so a link reopens the same code. */

@@ -5,10 +5,11 @@
     "types": ["node"],
     "rootDir": ".",
     "paths": {
-      "@qr-util/core": ["./lib/core/src/index.ts"],
-      "@qr-util/core/*": ["./lib/core/src/*"],
-      "@qr-util/render": ["./lib/render/src/index.ts"]
+      "@sculli/qr-utils": ["./lib/index.ts"],
+      "@sculli/qr-utils/core": ["./lib/core/src/index.ts"],
+      "@sculli/qr-utils/core/sjis": ["./lib/core/src/sjis.ts"],
+      "@sculli/qr-utils/render": ["./lib/render/src/index.ts"]
     }
   },
-  "include": ["lib/*/src/**/*.ts", "lib/*/test/**/*.ts", "vitest.config.ts"]
+  "include": ["lib/index.ts", "lib/*/src/**/*.ts", "lib/*/test/**/*.ts", "vitest.config.ts"]
 }

@@ -1,8 +1,8 @@
 {
-  "name": "@qr-util/website",
+  "name": "@sculli/qr-utils-website",
   "private": true,
   "type": "module",
-  "description": "Docs & interactive playground for the @qr-util packages (not published)",
+  "description": "Docs & interactive playground for @sculli/qr-utils (not published)",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -15,8 +15,7 @@
     "@astrojs/react": "^7.1.0",
     "@astrojs/sitemap": "^3.7.4",
     "@astrojs/vercel": "^11.0.16",
-    "@qr-util/core": "workspace:*",
-    "@qr-util/render": "workspace:*",
+    "@sculli/qr-utils": "workspace:*",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.4.2",
     "react": "^19.3.1",

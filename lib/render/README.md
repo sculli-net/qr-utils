@@ -1,16 +1,16 @@
-# @qr-util/render
+# @sculli/qr-utils/render
 
-Renders QR codes from [`@qr-util/core`](../core) as **SVG** (default), **PNG** or **HTML**. It supports rounded and
+Renders QR codes from [`@sculli/qr-utils/core`](../core) as **SVG** (default), **PNG** or **HTML**. It supports rounded and
 "liquid" shapes, separate styles for finder, alignment and timing patterns, and a safe centre cut-out for logos.
 It runs in Node and browsers; PNG output is rasterised in pure JavaScript.
 
 ```sh
-npm install @qr-util/core @qr-util/render
+pnpm add @sculli/qr-utils
 ```
 
 ```ts
-import { QR } from '@qr-util/core'
-import { RenderQR, renderQR } from '@qr-util/render'
+import { QR } from '@sculli/qr-utils/core'
+import { RenderQR, renderQR } from '@sculli/qr-utils/render'
 
 const qr = new QR('https://web-site.com')
 const renderer = new RenderQR(qr)

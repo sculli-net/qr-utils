@@ -1,5 +1,5 @@
 /**
- * @qr-util/core — headless QR Code generation.
+ * @sculli/qr-utils/core — headless QR Code generation.
  *
  * Original code by Ryan Day & Kazuhiko Arase (node-qrcode), rewritten by Matt Scullino.
  * Licensed under the MIT license.

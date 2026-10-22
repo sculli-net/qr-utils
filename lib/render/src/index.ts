@@ -1,9 +1,9 @@
 /**
- * @qr-util/render — render QR codes from `@qr-util/core` as SVG, PNG or HTML.
+ * @sculli/qr-utils/render — render QR codes from `@sculli/qr-utils/core` as SVG, PNG or HTML.
  *
  * @packageDocumentation
  */
-import { QR, type QRData, type QROptions } from '@qr-util/core'
+import { QR, type QRData, type QROptions } from '../../core/src/index.js'
 import { type RenderFormat, RenderQR } from './renderer.js'
 import type { RenderOptions } from './types.js'
 

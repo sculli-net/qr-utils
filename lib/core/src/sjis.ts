@@ -104,8 +104,8 @@ let lookup: Map<string, number> | undefined
  * (and the `'Shift_JIS'` byte encoding). Kept in a separate entry point so the table is only bundled when used.
  *
  * @example
- * import { QR } from '@qr-util/core'
- * import { toSJIS } from '@qr-util/core/sjis'
+ * import { QR } from '@sculli/qr-utils/core'
+ * import { toSJIS } from '@sculli/qr-utils/core/sjis'
  *
  * const qr = new QR('漢字', { toSJIS })
  * qr.segments[0].mode // 'kanji'

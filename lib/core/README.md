@@ -1,8 +1,8 @@
-# @qr-util/core
+# @sculli/qr-utils/core
 
 Headless QR Code generation for Node and browsers. It produces the module matrix plus metadata about every
 module: which function pattern it belongs to, and which codeword and error correction block it stores. It does not
-draw anything; use [`@qr-util/render`](../render) for SVG, PNG and HTML output.
+draw anything; use [`@sculli/qr-utils/render`](../render) for SVG, PNG and HTML output.
 
 - **Every symbology:** QR Code Model 2, QR Code Model 1, Micro QR (M1–M4) and rMQR (R7x43–R17x139)
 - **Full control, sensible defaults:** version, error correction, mask, segments, character encoding / ECI, FNC1 (GS1)
@@ -12,13 +12,13 @@ draw anything; use [`@qr-util/render`](../render) for SVG, PNG and HTML output.
 - **No dependencies.** Ships as ESM with TypeScript types and JSDoc on every option.
 
 ```sh
-npm install @qr-util/core
+pnpm add @sculli/qr-utils
 ```
 
 ## Quick start
 
 ```ts
-import { QR, createQR } from '@qr-util/core'
+import { QR, createQR } from '@sculli/qr-utils/core'
 
 const qr = new QR('https://web-site.com')
 qr.version       // 2  (smallest version that fits)
@@ -87,7 +87,7 @@ Kanji mode stores Shift JIS characters in 13 bits each instead of 24 bits of UTF
 separate entry point, so it is only bundled when you import it:
 
 ```ts
-import { toSJIS } from '@qr-util/core/sjis'
+import { toSJIS } from '@sculli/qr-utils/core/sjis'
 new QR('漢字テスト', { toSJIS })
 ```
 
@@ -135,7 +135,7 @@ qr.getModule(3, 3)    // { type: 'finder', part: 'inner', dark: true, landmark: 
 Module types are `finder`, `separator`, `timing`, `alignment`, `format`, `version`, `darkModule`, `subFinder` (rMQR),
 `cornerFinder` (rMQR), `extension` (Model 1), `data`, `ecc` and `remainder`. Data and ECC modules also report
 their `codeword` (index, block, bit), and `errorCorrectionBlocks()` reports how many codewords each block can
-correct. `@qr-util/render` uses this to work out how much of the centre can safely be cleared for a logo.
+correct. `@sculli/qr-utils/render` uses this to work out how much of the centre can safely be cleared for a logo.
 
 ## Standards notes
 

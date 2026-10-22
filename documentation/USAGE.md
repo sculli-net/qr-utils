@@ -1,9 +1,9 @@
 # Usage
 
-The API reference lives with each package:
+The API reference lives with each module of the `@sculli/qr-utils` package:
 
-- [`@qr-util/core`](../lib/core/README.md): generating symbols, options, output formats, landmarks, errors
-- [`@qr-util/render`](../lib/render/README.md): SVG / PNG / HTML rendering, shapes, module styles, excavation
+- [`@sculli/qr-utils/core`](../lib/core/README.md): generating symbols, options, output formats, landmarks, errors
+- [`@sculli/qr-utils/render`](../lib/render/README.md): SVG / PNG / HTML rendering, shapes, module styles, excavation
 
 Every public option and method also carries JSDoc with examples, so editors show the documentation inline.
 
@@ -17,7 +17,7 @@ Every public option and method also carries JSDoc with examples, so editors show
 | `encoding/` | character sets & ECI, optimal segmentation (dynamic programming over modes), bit buffer |
 | `ecc/reed-solomon.ts` | GF(256) Reed–Solomon encoder |
 | `symbols/` | one definition per symbology (`model2`, `model1`, `micro`, `rmqr`): function patterns, codeword placement, format information, masks; `tables.ts` holds the ISO block tables |
-| `sjis.ts` | optional Shift JIS table (`@qr-util/core/sjis`) for Kanji mode |
+| `sjis.ts` | optional Shift JIS table (`@sculli/qr-utils/core/sjis`) for Kanji mode |
 
 ## Internals (`lib/render/src`)
 

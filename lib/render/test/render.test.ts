@@ -1,4 +1,4 @@
-import { QR } from '@qr-util/core'
+import { QR } from '@sculli/qr-utils/core'
 import { describe, expect, it } from 'vitest'
 import { decodeImage } from '../../core/test/helpers/decode.js'
 import { parseColor, RenderQR, renderQR } from '../src/index.js'

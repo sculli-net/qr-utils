@@ -19,9 +19,10 @@ export default defineConfig({
         resolve: {
             // Use the library sources directly so the site never needs a prior `pnpm build`
             alias: [
-                { find: /^@qr-util\/core$/, replacement: resolveLib('core/src/index.ts') },
-                { find: /^@qr-util\/core\/sjis$/, replacement: resolveLib('core/src/sjis.ts') },
-                { find: /^@qr-util\/render$/, replacement: resolveLib('render/src/index.ts') },
+                { find: /^@sculli\/qr-utils$/, replacement: resolveLib('index.ts') },
+                { find: /^@sculli\/qr-utils\/core$/, replacement: resolveLib('core/src/index.ts') },
+                { find: /^@sculli\/qr-utils\/core\/sjis$/, replacement: resolveLib('core/src/sjis.ts') },
+                { find: /^@sculli\/qr-utils\/render$/, replacement: resolveLib('render/src/index.ts') },
             ],
         },
     },

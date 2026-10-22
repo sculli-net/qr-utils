@@ -1,4 +1,4 @@
-import type { QR } from '@qr-util/core'
+import type { QR } from '../../core/src/index.js'
 
 /** Share of each block's correction capacity a full (100%) excavation may use, leaving room for real damage. */
 const SAFETY = 0.8

@@ -1,4 +1,4 @@
-import type { QR } from '@qr-util/core'
+import type { QR } from '../../core/src/index.js'
 import { parseColor } from './color.js'
 import { computeExcavation, type ExcavationArea } from './excavate.js'
 import { encodePNG } from './png.js'
@@ -62,11 +62,11 @@ function computeLayout(qr: QR, options: RenderOptions): RenderLayoutInfo {
 }
 
 /**
- * Renders a `QR` from `@qr-util/core` as SVG (default), PNG or HTML.
+ * Renders a `QR` from `@sculli/qr-utils/core` as SVG (default), PNG or HTML.
  *
  * @example
- * import { QR } from '@qr-util/core'
- * import { RenderQR } from '@qr-util/render'
+ * import { QR } from '@sculli/qr-utils/core'
+ * import { RenderQR } from '@sculli/qr-utils/render'
  *
  * const qr = new QR('https://web-site.com')
  * const renderer = new RenderQR(qr, { size: 300, color: '#222' })
@@ -82,7 +82,7 @@ export class RenderQR {
   #plan: RenderPlan | undefined
 
   /**
-   * @param qr a QR code created with `new QR()` from `@qr-util/core`.
+   * @param qr a QR code created with `new QR()` from `@sculli/qr-utils/core`.
    * @param options size, colours, quiet zone, padding, shapes, module styles and excavation.
    */
   constructor(qr: QR, options: RenderOptions = {}) {
