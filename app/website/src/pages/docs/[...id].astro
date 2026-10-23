@@ -1,0 +1,26 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import { getCollection, render } from 'astro:content';
+import { getComponents } from '@/components/mdx';
+import '@/components/mdx/styles.css';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('docs');
+  return docs.map(doc => ({
+    params: { id: doc.id },
+    props: { doc },
+  }));
+}
+
+const { doc } = Astro.props;
+const { Content } = await render(doc);
+
+const components = await getComponents();
+
+---
+<Layout title={`${doc.data.title} | qr-utils`}>
+    <h1>{doc.data.title}</h1>
+    <div class="doc-wrapper">
+        <Content components={{ ...components }} />
+    </div>
+</Layout>

@@ -6,6 +6,11 @@ const tabs = [
 ];
 
 const current = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+
+import { getCollection } from 'astro:content';
+const docs = await getCollection('docs');
+
 ---
 
 <style>

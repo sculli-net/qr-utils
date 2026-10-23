@@ -1,0 +1,8 @@
+div.doc-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.doc-wrapper p {
+    text-wrap: pretty;
+}

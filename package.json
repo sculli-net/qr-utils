@@ -39,7 +39,16 @@
     "lib/*/README.md",
     "LICENCE"
   ],
-  "keywords": ["qr", "qrcode", "qr-code", "micro-qr", "rmqr", "barcode", "svg", "png"],
+  "keywords": [
+    "qr",
+    "qrcode",
+    "qr-code",
+    "micro-qr",
+    "rmqr",
+    "barcode",
+    "svg",
+    "png"
+  ],
   "packageManager": "pnpm@10.28.2",
   "engines": {
     "node": ">=20.19"
@@ -59,6 +68,7 @@
     "fflate": "^0.8.3"
   },
   "devDependencies": {
+    "@astrojs/ts-plugin": "^1.10.12",
     "@types/node": "^26.6.5",
     "typescript": "^6.0.2",
     "vitest": "^5.0.5",

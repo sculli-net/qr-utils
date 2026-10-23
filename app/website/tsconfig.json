@@ -9,7 +9,15 @@
       "@sculli/qr-utils": ["../../lib/index.ts"],
       "@sculli/qr-utils/core": ["../../lib/core/src/index.ts"],
       "@sculli/qr-utils/core/sjis": ["../../lib/core/src/sjis.ts"],
-      "@sculli/qr-utils/render": ["../../lib/render/src/index.ts"]
-    }
+      "@sculli/qr-utils/render": ["../../lib/render/src/index.ts"],
+      "@/*": [
+        "./src/*"
+      ]
+    },
+    "plugins": [
+      {
+        "name": "@astrojs/ts-plugin"
+      }
+    ]
   }
 }

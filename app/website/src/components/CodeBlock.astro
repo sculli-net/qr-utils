@@ -2,142 +2,145 @@
 import { codeToHtml } from "shiki/bundle/web";
 import Clipboard from "../assets/icons/clipboard.svg";
 
-const packageManager = {
-  npm: `install`,
-  pnpm: `add`,
-  yarn: `add`,
-  bun: `add`,
-};
+const { code, "data-language": lang } = Astro.props;
 
-const PACKAGE_NAME = `@sculli/qr-utils`;
-
-const scripts = await Promise.all(
-  Object.entries(packageManager).map(async ([k, v]) => ({
-    manager: k,
-    html: await codeToHtml(`${k} ${v} ${PACKAGE_NAME}`, {
-      lang: "zsh",
+const codeHtml = code
+  ? await codeToHtml(String(code), {
+      lang: "typescript",
       theme: "vitesse-dark",
-    }),
-  })),
-);
-
-const defaultTab = scripts[0];
+    })
+  : null;
 ---
 
-<div class="" data-code-tabs>
-  <div class="">
-    <ul class="flex gap-1" role="group" aria-label="Package manager">
-      {
-        scripts.map((s, i) => (
-          <li>
-            <button
-              type="button"
-              data-code-tab={s.manager}
-              aria-pressed={i === 0}
-              class="px-2 py-1 rounded-sm bg-amber-100 aria-pressed:bg-amber-400"
-            >
-              {s.manager}
-            </button>
-          </li>
-        ))
-      }
-    </ul>
-  </div>
-  <div class="relative rounded-sm overflow-hidden">
-    {
-      scripts.map((s, i) => (
-        <div
-          data-code-panel={s.manager}
-          hidden={i !== 0}
-          set:html={s.html}
-          class="[&_pre]:p-2"
-        />
-      ))
-    }
+<div class="" data-code-wrapper>
+  <div class="relative rounded-sm overflow-hidden min-h-10 bg-slate-800 p-2">
+    {codeHtml ? <div set:html={codeHtml} class="[&_pre]:p-2" /> : <slot />}
     <div
       class="absolute right-1 top-1 z-2 text-white rounded-sm bg-slate-700 hover:bg-slate-500"
     >
-      <button class="p-2 [&_svg]:size-4">
-        <Clipboard />
+      <button class="copy-code p-2 [&_svg]:size-4" data-code-copy-button aria-label="Copy code" title="Copy code">
+        <Clipboard class="code-icon code-icon-copy" aria-hidden="true" />
+        <svg class="code-icon code-icon-check" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 6 9 17l-5-5"></path>
+        </svg>
+        <!-- <span class="code-copy-hint" data-code-hint aria-hidden="true">Ctrl C</span> -->
       </button>
     </div>
   </div>
+  <span class="text-2xl text-black">
+    lang: {lang}
+  </span>
 </div>
-<script>
-  // const tabs = document.querySelectorAll(`[data-codeblock-tab]`);
-  // const tablist = document.querySelector(`[data-codeblock-tablist]`)
 
-  // const codeBlocks = Array.from(document.querySelectorAll(`[data-codeblock-code]`)).map(e=>({ label: e.getAttribute(`data-codeblock-code`), element: e }))
+<script src="@/scripts/handle-copy.ts">
 
-  // tabs.forEach(tab=>{
-  //     tab.addEventListener("click", (e)=> {
-  //         const packageManager = tab.getAttribute("data-codeblock-tab");
-  //         if (tablist && packageManager) {
-  //             codeBlocks.forEach(c=>c.element.setAttribute(`data-codeblock-code-isactive`, "false"))
-  //             codeBlocks.find(c=>c.label === packageManager)?.element.setAttribute(`data-codeblock-code-isactive`, "true")
-  //             tabs.forEach(t=>t.setAttribute(`data-codeblock-tab-isactive`, "false"))
-  //             tab.setAttribute(`data-codeblock-tab-isactive`, "true")
-  //             tablist.setAttribute(`data-codeblock-activetab`,packageManager)
-  //         }
-  //     })
-  // })
-
-//   const initializeCodeTabs = () => {
-//     document
-//       .querySelectorAll<HTMLElement>("[data-code-tabs]")
-//       .forEach((root) => {
-//         root.addEventListener("click", (event) => {
-//           if (!(event.target instanceof Element)) return;
-//           const tab =
-//             event.target.closest<HTMLButtonElement>("[data-code-tab]");
-//           if (!tab || !root.contains(tab)) return;
-
-//           const selected = tab.dataset.codeTab;
-
-//           root
-//             .querySelectorAll<HTMLButtonElement>("[data-code-tab]")
-//             .forEach((button) => {
-//               button.setAttribute("aria-pressed", String(button === tab));
-//             });
-
-//           root
-//             .querySelectorAll<HTMLElement>("[data-code-panel]")
-//             .forEach((panel) => {
-//               panel.hidden = panel.dataset.codePanel !== selected;
-//             });
-//         });
-//       });
-//   };
-//   document.addEventListener("astro:page-load", initializeCodeTabs);
-//   initializeCodeTabs();
-document.addEventListener("click", (event) => {
-    if (!(event.target instanceof Element)) return;
-
-    const tab = event.target.closest<HTMLButtonElement>(
-      "[data-code-tab]"
-    );
-
-    const root = tab?.closest<HTMLElement>(
-      "[data-code-tabs]"
-    );
-
-    if (!tab || !root) return;
-
-    const selected = tab.dataset.codeTab;
-
-    root.querySelectorAll<HTMLButtonElement>("[data-code-tab]")
-      .forEach((button) => {
-        button.setAttribute(
-          "aria-pressed",
-          String(button === tab)
-        );
-      });
-
-    root.querySelectorAll<HTMLElement>("[data-code-panel]")
-      .forEach((panel) => {
-        panel.hidden = panel.dataset.codePanel !== selected;
-      });
-  });
 </script>
 
-<style></style>
+<style>
+
+.code-char {
+		display: inline-block;
+		white-space: pre;
+		animation: code-char 760ms ease-out backwards;
+		animation-delay: calc(var(--i) * 18ms);
+}
+
+/* Lands quickly in full amber, holds, then settles to the command's own colour (like the playground trace) */
+@keyframes code-char {
+  0% {
+    color: var(--color-amber-400);
+    filter: blur(2px);
+    transform: translateY(0.18em);
+  }
+  30% {
+    color: var(--color-amber-400);
+    filter: none;
+    transform: none;
+  }
+}
+
+.copy-code {
+  display: grid;
+  place-items: center;
+  flex: none;
+  /* width: 4rem; */
+  border-left: 1px solid color-mix(in oklab, white 12%, transparent);
+  color: var(--color-neutral-400);
+  cursor: pointer;
+  transition:
+    color 150ms ease-out,
+    background-color 150ms ease-out;
+}
+
+.copy-code:hover {
+  color: white;
+  background: color-mix(in oklab, white 8%, transparent);
+}
+
+.copy-code:active {
+  background: color-mix(in oklab, white 14%, transparent);
+}
+
+.copy-code:focus-visible {
+  outline: 2px solid white;
+  outline-offset: -6px;
+  border-radius: var(--radius-md);
+}
+
+.code-icon {
+  grid-area: 1 / 1;
+  /* width: 1.125rem; */
+  /* height: 1.125rem; */
+  transition:
+    opacity 150ms ease-out,
+    transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.code-icon-check {
+  opacity: 0;
+  transform: scale(0.6);
+  color: var(--color-amber-400);
+}
+
+.is-copied .code-icon-copy {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.is-copied .code-icon-check {
+  opacity: 1;
+  transform: none;
+}
+
+/* A failed copy stays neutral: the command is left selected and the cell names the shortcut to copy it by hand */
+.code-copy-hint {
+  grid-area: 1 / 1;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.25rem;
+  color: var(--color-neutral-300);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 150ms ease-out;
+}
+
+.is-copy-failed .code-icon-copy {
+  opacity: 0;
+  transform: scale(0.6);
+}
+
+.is-copy-failed .code-copy-hint {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .code-indicator,
+  .code-icon {
+    transition: none;
+  }
+  .code-char {
+    animation: none;
+  }
+}
+
+</style>

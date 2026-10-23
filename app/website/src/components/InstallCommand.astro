@@ -17,7 +17,7 @@ const [defaultManager] = managers;
 	<div class="install-managers" role="group" aria-label="Package manager">
 		{
 			managers.map(({ id, run }) => (
-				<button type="button" class="install-manager" data-manager={id} data-run={run} aria-pressed={String(id === defaultManager.id)}>
+				<button type="button" class="install-manager" data-manager={id} data-run={run} aria-pressed={String(id === defaultManager.id) as 'true' | 'false'}>
 					{id}
 				</button>
 			))

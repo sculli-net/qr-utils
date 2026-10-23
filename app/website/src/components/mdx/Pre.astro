@@ -1,0 +1,20 @@
+---
+import CodeBlock from '../CodeBlock.astro';
+
+const props = Astro.props;
+
+const isCodeBlock =
+  'data-language' in props ||
+  props.class?.split(/\s+/).includes('astro-code');
+
+---
+
+{isCodeBlock ? (
+  <CodeBlock {...props}>
+    <slot />
+  </CodeBlock>
+) : (
+  <pre {...props}>
+    <slot />
+  </pre>
+)}

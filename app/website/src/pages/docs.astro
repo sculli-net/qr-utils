@@ -1,8 +1,24 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { getDocPages } from "@/lib/collections"
+
+import type { CollectionEntry } from 'astro:content';
+
+import { getCollection } from 'astro:content';
+const docs = await getCollection('docs');
+
+const docMap = getDocPages(docs);
+const docList = Array.from(docMap);
+
 ---
 
 <Layout title="Docs">
 	<h1 class="mb-4 text-3xl font-bold">Docs</h1>
 	<p class="text-neutral-600">Placeholder: documentation for @sculli/qr-utils/core and @sculli/qr-utils/render will go here.</p>
+	{docList.map(([docId, doc])=> (
+		<div>
+			{docId}
+		</div>
+	))}
+
 </Layout>

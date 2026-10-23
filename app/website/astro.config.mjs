@@ -5,6 +5,8 @@ import mdx from '@astrojs/mdx';
 import vercel from '@astrojs/vercel';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { componentList } from '@/components/mdx';
+
 
 const resolveLib = (path) => fileURLToPath(new URL(`../../lib/${path}`, import.meta.url));
 
@@ -12,7 +14,14 @@ const resolveLib = (path) => fileURLToPath(new URL(`../../lib/${path}`, import.m
 export default defineConfig({
     site: `https://qr-utils.sculli.dev`,
     prefetch: true,
-    integrations: [react(), mdx(), sitemap()],
+    integrations: [react(), sitemap(), mdx({
+        shikiConfig: {
+            theme: 'tokyo-night',
+        },
+        optimize: {
+            ignoreElementNames: [ ...componentList ]
+        }
+    })],
     adapter: vercel(),
     vite: {
         plugins: [tailwindcss()],
